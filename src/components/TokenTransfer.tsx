@@ -111,7 +111,7 @@ export function TokenTransfer() {
       <div className="card-glow rounded-lg p-6">
         <div className="text-center py-8">
           <Coins size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">Connect wallet to transfer tokens</p>
+          <p className="text-gray-500">连接钱包以转账代币</p>
         </div>
       </div>
     )
@@ -122,8 +122,8 @@ export function TokenTransfer() {
       <div className="card-glow rounded-lg p-6">
         <div className="text-center py-8">
           <Coins size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">USDT not available on this network</p>
-          <p className="text-sm text-gray-600 mt-2">Please switch to a supported network</p>
+          <p className="text-gray-500">USDT 在此网络上不可用</p>
+          <p className="text-sm text-gray-600 mt-2">请切换到支持的网络</p>
         </div>
       </div>
     )
@@ -134,8 +134,8 @@ export function TokenTransfer() {
       <div className="flex items-center gap-3 mb-6">
         <Coins size={24} className="text-neon-purple" />
         <div>
-          <h2 className="text-xl font-bold text-white">Token Transfer</h2>
-          <p className="text-sm text-gray-400">Send ERC-20 tokens</p>
+          <h2 className="text-xl font-bold text-white">代币转账</h2>
+          <p className="text-sm text-gray-400">发送 ERC-20 代币</p>
         </div>
       </div>
 
@@ -143,9 +143,9 @@ export function TokenTransfer() {
       <div className="mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-lg">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="text-sm text-gray-400">Token</div>
+            <div className="text-sm text-gray-400">代币</div>
             <div className="text-lg font-bold text-white">
-              {tokenName?.toString() || 'Loading...'}
+              {tokenName?.toString() || '加载中...'}
             </div>
             <div className="text-sm text-gray-500">
               {tokenSymbol?.toString() || '-'}
@@ -154,13 +154,13 @@ export function TokenTransfer() {
           <button
             onClick={() => refetchBalance()}
             className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-            title="Refresh balance"
+            title="刷新余额"
           >
             <RefreshCw size={18} className="text-gray-400 hover:text-neon-blue" />
           </button>
         </div>
         <div className="pt-3 border-t border-gray-800">
-          <div className="text-sm text-gray-400 mb-1">Your Balance</div>
+          <div className="text-sm text-gray-400 mb-1">您的余额</div>
           <div className="text-2xl font-bold text-neon">
             {balance && tokenDecimals
               ? formatTokenAmount(balance as bigint, Number(tokenDecimals), 4)
@@ -169,7 +169,7 @@ export function TokenTransfer() {
           </div>
         </div>
         <div className="mt-2 text-xs text-gray-500">
-          Contract: {formatAddress(usdtAddress)}
+          合约地址: {formatAddress(usdtAddress)}
         </div>
       </div>
 
@@ -177,7 +177,7 @@ export function TokenTransfer() {
       <form onSubmit={handleTransfer} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">
-            Recipient Address
+            收款地址
           </label>
           <input
             type="text"
@@ -191,7 +191,7 @@ export function TokenTransfer() {
 
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">
-            Amount ({tokenSymbol?.toString() || 'Token'})
+            数量 ({tokenSymbol?.toString() || '代币'})
           </label>
           <input
             type="number"
@@ -208,7 +208,7 @@ export function TokenTransfer() {
               onClick={setMaxAmount}
               className="text-xs text-neon-blue hover:text-neon-purple mt-1"
             >
-              Max: {formatTokenAmount(balance as bigint, Number(tokenDecimals), 6)}
+              最大值: {formatTokenAmount(balance as bigint, Number(tokenDecimals), 6)}
             </button>
           ) : null}
         </div>
@@ -221,12 +221,12 @@ export function TokenTransfer() {
           {isPending || isConfirming ? (
             <>
               <Loader2 size={20} className="animate-spin" />
-              <span>{isPending ? 'Sending...' : 'Confirming...'}</span>
+              <span>{isPending ? '发送中...' : '确认中...'}</span>
             </>
           ) : (
             <>
               <Send size={20} />
-              <span>Send Tokens</span>
+              <span>发送代币</span>
             </>
           )}
         </button>
@@ -238,7 +238,7 @@ export function TokenTransfer() {
           <CheckCircle size={20} className="text-neon-green flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-neon-green mb-1">
-              {isConfirmed ? 'Transfer Confirmed!' : 'Transaction Sent!'}
+              {isConfirmed ? '转账已确认！' : '交易已发送！'}
             </div>
             <a
               href={getExplorerUrl(hash)}
@@ -258,10 +258,10 @@ export function TokenTransfer() {
           <XCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
             <div className="text-sm font-semibold text-red-400 mb-1">
-              Transaction Failed
+              交易失败
             </div>
             <div className="text-xs text-gray-400">
-              {(error as Error | null)?.message || 'Please try again or check your balance'}
+              {(error as Error | null)?.message || '请重试或检查您的余额'}
             </div>
           </div>
         </div>

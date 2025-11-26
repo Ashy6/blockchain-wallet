@@ -15,10 +15,10 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: Activity },
-    { id: 'datalogger', label: 'DataLogger', icon: FileText },
-    { id: 'token', label: 'Token Transfer', icon: Coins },
-    { id: 'history', label: 'History', icon: History },
+    { id: 'overview', label: '概览', icon: Activity },
+    { id: 'datalogger', label: '合约交互', icon: FileText },
+    { id: 'token', label: '代币转账', icon: Coins },
+    { id: 'history', label: '交易历史', icon: History },
     { id: 'subgraph', label: 'Subgraph', icon: BookOpen },
   ] as const
 
@@ -38,10 +38,10 @@ function App() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-neon">
-                    Cyber Wallet
+                    区块链钱包
                   </h1>
                   <p className="text-xs text-gray-500">
-                    Powered by wagmi & The Graph
+                    基于 wagmi & The Graph 构建
                   </p>
                 </div>
               </div>
@@ -89,25 +89,24 @@ function App() {
                       <div className="flex items-center gap-3 mb-4">
                         <Zap size={28} className="text-neon-blue" />
                         <h2 className="text-3xl font-bold text-white">
-                          Welcome to the Future of DeFi
+                          欢迎来到 DeFi 的未来
                         </h2>
                       </div>
                       <p className="text-gray-300 text-lg max-w-2xl">
-                        Connect your wallet, interact with smart contracts, transfer tokens,
-                        and query blockchain data using The Graph.
+                        连接钱包，与智能合约交互，转账代币，使用 The Graph 查询区块链数据。
                       </p>
                       <div className="flex items-center gap-6 mt-6">
                         <div className="flex items-center gap-2">
                           <Activity size={20} className="text-neon-green" />
-                          <span className="text-sm text-gray-400">Real-time Events</span>
+                          <span className="text-sm text-gray-400">实时事件</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
-                          <span className="text-sm text-gray-400">Secure & Fast</span>
+                          <span className="text-sm text-gray-400">安全快速</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Wallet size={20} className="text-neon-blue" />
-                          <span className="text-sm text-gray-400">Multi-Chain Support</span>
+                          <span className="text-sm text-gray-400">多链支持</span>
                         </div>
                       </div>
                     </div>
@@ -127,10 +126,10 @@ function App() {
                       <FileText size={24} className="text-neon-blue" />
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2">
-                      Contract Interaction
+                      智能合约交互
                     </h3>
                     <p className="text-sm text-gray-400">
-                      Read and write to smart contracts with real-time event monitoring.
+                      读取和写入智能合约，实时监听链上事件。
                     </p>
                   </div>
 
@@ -139,10 +138,10 @@ function App() {
                       <Coins size={24} className="text-neon-purple" />
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2">
-                      Token Management
+                      代币管理
                     </h3>
                     <p className="text-sm text-gray-400">
-                      Transfer ERC-20 tokens and track transaction history across chains.
+                      转账 ERC-20 代币，追踪多链交易历史。
                     </p>
                   </div>
 
@@ -151,10 +150,10 @@ function App() {
                       <BookOpen size={24} className="text-neon-green" />
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2">
-                      The Graph Integration
+                      The Graph 集成
                     </h3>
                     <p className="text-sm text-gray-400">
-                      Query blockchain data efficiently with custom subgraphs.
+                      使用自定义 Subgraph 高效查询区块链数据。
                     </p>
                   </div>
                 </div>
@@ -192,14 +191,14 @@ function App() {
           <div className="container mx-auto px-6">
             <div className="flex items-center justify-between text-sm text-gray-500">
               <div>
-                Built with{' '}
-                <span className="text-neon-blue font-semibold">wagmi</span>,{' '}
-                <span className="text-neon-purple font-semibold">viem</span>, and{' '}
-                <span className="text-neon-pink font-semibold">The Graph</span>
+                使用{' '}
+                <span className="text-neon-blue font-semibold">wagmi</span>、{' '}
+                <span className="text-neon-purple font-semibold">viem</span> 和{' '}
+                <span className="text-neon-pink font-semibold">The Graph</span> 构建
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse" />
-                <span>All systems operational</span>
+                <span>所有系统正常运行</span>
               </div>
             </div>
           </div>

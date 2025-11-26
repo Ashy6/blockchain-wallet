@@ -54,7 +54,7 @@ export function WalletPanel() {
       <div className="w-96 bg-gray-900/30 backdrop-blur-md border-l border-gray-800 p-6 flex items-center justify-center">
         <div className="text-center">
           <Coins size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">Connect your wallet to get started</p>
+          <p className="text-gray-500">连接钱包以开始</p>
         </div>
       </div>
     )
@@ -64,7 +64,7 @@ export function WalletPanel() {
     <div className="w-96 bg-gray-900/30 backdrop-blur-md border-l border-gray-800 flex flex-col">
       {/* Balance Section */}
       <div className="p-6 border-b border-gray-800">
-        <div className="mb-2 text-sm text-gray-400">Total Balance</div>
+        <div className="mb-2 text-sm text-gray-400">总余额</div>
         <div className="flex items-baseline gap-2">
           <span className="text-3xl font-bold text-neon">
             {balance ? parseFloat(formatEther(balance.value)).toFixed(4) : '0.0000'}
@@ -154,7 +154,7 @@ export function WalletPanel() {
               ) : (
                 <>
                   <Send size={20} />
-                  <span>Send Transaction</span>
+                  <span>发送交易</span>
                 </>
               )}
             </button>
@@ -199,7 +199,7 @@ export function WalletPanel() {
         {activeTab === 'swap' && (
           <div className="text-center py-12">
             <ArrowDownUp size={48} className="mx-auto mb-4 text-gray-600" />
-            <p className="text-gray-500">Swap feature coming soon</p>
+            <p className="text-gray-500">Swap 功能即将推出</p>
             <p className="text-sm text-gray-600 mt-2">
               Integrate with Uniswap or other DEX protocols
             </p>
@@ -209,9 +209,9 @@ export function WalletPanel() {
         {activeTab === 'history' && (
           <div className="text-center py-12">
             <History size={48} className="mx-auto mb-4 text-gray-600" />
-            <p className="text-gray-500">No transaction history yet</p>
+            <p className="text-gray-500">暂无交易历史</p>
             <p className="text-sm text-gray-600 mt-2">
-              Your transactions will appear here
+              您的交易将在此显示
             </p>
           </div>
         )}

@@ -28,8 +28,8 @@ export function NetworkSwitch() {
       <div className="flex items-center gap-3 mb-4">
         <Network size={24} className="text-neon-blue" />
         <div>
-          <h3 className="text-lg font-bold text-white">Networks</h3>
-          <p className="text-sm text-gray-400">Switch between chains</p>
+          <h3 className="text-lg font-bold text-white">网络</h3>
+          <p className="text-sm text-gray-400">切换区块链网络</p>
         </div>
       </div>
 

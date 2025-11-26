@@ -27,7 +27,7 @@ export function WalletConnect() {
           className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/50 hover:bg-red-500/20 text-red-400 rounded-lg transition-all duration-300"
         >
           <Power size={16} />
-          <span className="text-sm font-semibold">Disconnect</span>
+          <span className="text-sm font-semibold">断开连接</span>
         </button>
       </div>
     )
@@ -35,7 +35,7 @@ export function WalletConnect() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="text-sm text-gray-400 mb-2">Connect your wallet:</div>
+      <div className="text-sm text-gray-400 mb-2">连接钱包：</div>
       {connectors.map((connector) => (
         <button
           key={connector.uid}

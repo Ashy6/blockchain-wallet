@@ -161,7 +161,7 @@ export function TransactionHistory() {
       <div className="card-glow rounded-lg p-6">
         <div className="text-center py-8">
           <History size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">Connect wallet to view transaction history</p>
+          <p className="text-gray-500">连接钱包以查看交易历史</p>
         </div>
       </div>
     )
@@ -172,7 +172,7 @@ export function TransactionHistory() {
       <div className="card-glow rounded-lg p-6">
         <div className="text-center py-8">
           <History size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">Token not available on this network</p>
+          <p className="text-gray-500">代币在此网络上不可用</p>
         </div>
       </div>
     )
@@ -184,15 +184,15 @@ export function TransactionHistory() {
         <div className="flex items-center gap-3">
           <History size={24} className="text-neon-pink" />
           <div>
-            <h2 className="text-xl font-bold text-white">Transaction History</h2>
-            <p className="text-sm text-gray-400">Recent token transfers</p>
+            <h2 className="text-xl font-bold text-white">交易历史</h2>
+            <p className="text-sm text-gray-400">最近的代币转账</p>
           </div>
         </div>
         <button
           onClick={fetchTransfers}
           disabled={loading}
           className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
-          title="Refresh history"
+          title="刷新历史"
         >
           <RefreshCw size={18} className={`text-gray-400 hover:text-neon-blue ${loading ? 'animate-spin' : ''}`} />
         </button>
@@ -205,9 +205,9 @@ export function TransactionHistory() {
       ) : transfers.length === 0 ? (
         <div className="text-center py-12">
           <History size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">No transactions found</p>
+          <p className="text-gray-500">未找到交易</p>
           <p className="text-sm text-gray-600 mt-2">
-            Your token transfers will appear here
+            您的代币转账将在此显示
           </p>
         </div>
       ) : (
@@ -234,10 +234,10 @@ export function TransactionHistory() {
                     <div className={`font-semibold ${
                       transfer.type === 'sent' ? 'text-red-400' : 'text-green-400'
                     }`}>
-                      {transfer.type === 'sent' ? 'Sent' : 'Received'}
+                      {transfer.type === 'sent' ? '发送' : '接收'}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {transfer.type === 'sent' ? 'To: ' : 'From: '}
+                      {transfer.type === 'sent' ? '至: ' : '从: '}
                       {formatAddress(transfer.type === 'sent' ? transfer.to : transfer.from)}
                     </div>
                   </div>

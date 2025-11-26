@@ -107,7 +107,7 @@ export function DataLoggerPanel() {
       <div className="card-glow rounded-lg p-6">
         <div className="text-center py-8">
           <FileText size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">Connect wallet to interact with DataLogger</p>
+          <p className="text-gray-500">连接钱包以与 DataLogger 合约交互</p>
         </div>
       </div>
     )
@@ -118,8 +118,8 @@ export function DataLoggerPanel() {
       <div className="card-glow rounded-lg p-6">
         <div className="text-center py-8">
           <FileText size={48} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-500">DataLogger contract not available on this network</p>
-          <p className="text-sm text-gray-600 mt-2">Please switch to Sepolia network</p>
+          <p className="text-gray-500">DataLogger 合约在此网络上不可用</p>
+          <p className="text-sm text-gray-600 mt-2">请切换到 Sepolia 测试网</p>
         </div>
       </div>
     )
@@ -130,33 +130,33 @@ export function DataLoggerPanel() {
       <div className="flex items-center gap-3 mb-6">
         <FileText size={24} className="text-neon-blue" />
         <div>
-          <h2 className="text-xl font-bold text-white">DataLogger Contract</h2>
-          <p className="text-sm text-gray-400">Track and update on-chain data</p>
+          <h2 className="text-xl font-bold text-white">DataLogger 合约</h2>
+          <p className="text-sm text-gray-400">追踪和更新链上数据</p>
         </div>
       </div>
 
       {/* Current Value Display */}
       <div className="mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-lg">
-        <div className="text-sm text-gray-400 mb-2">Current Value</div>
+        <div className="text-sm text-gray-400 mb-2">当前数值</div>
         <div className="text-3xl font-bold text-neon">
           {currentData !== null ? currentData.toString() : '-'}
         </div>
         <div className="mt-2 text-xs text-gray-500">
-          Contract: {formatAddress(contractAddress)}
+          合约地址: {formatAddress(contractAddress)}
         </div>
       </div>
 
       {/* Update Form */}
       <form onSubmit={handleUpdateData} className="mb-6">
         <label className="block text-sm font-medium text-gray-300 mb-2">
-          Update Value
+          更新数值
         </label>
         <div className="flex gap-2">
           <input
             type="number"
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
-            placeholder="Enter new value"
+            placeholder="输入新数值"
             className="input-cyber flex-1 rounded-lg"
             disabled={isPending || isConfirming}
           />
@@ -168,12 +168,12 @@ export function DataLoggerPanel() {
             {isPending || isConfirming ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
-                {isPending ? 'Sending...' : 'Confirming...'}
+                {isPending ? '发送中...' : '确认中...'}
               </>
             ) : (
               <>
                 <Send size={18} />
-                Update
+                更新
               </>
             )}
           </button>
@@ -186,7 +186,7 @@ export function DataLoggerPanel() {
           <CheckCircle size={20} className="text-neon-green flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-neon-green mb-1">
-              {isConfirmed ? 'Transaction Confirmed!' : 'Transaction Sent!'}
+              {isConfirmed ? '交易已确认！' : '交易已发送！'}
             </div>
             <a
               href={getExplorerUrl(hash)}
@@ -205,13 +205,13 @@ export function DataLoggerPanel() {
       <div>
         <div className="flex items-center gap-2 mb-4">
           <Activity size={18} className="text-neon-purple" />
-          <h3 className="text-lg font-bold text-white">Recent Events</h3>
+          <h3 className="text-lg font-bold text-white">最近事件</h3>
         </div>
 
         {events.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <Clock size={32} className="mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No events yet. Update data to see events.</p>
+            <p className="text-sm">暂无事件。更新数据后将在此显示事件。</p>
           </div>
         ) : (
           <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -235,13 +235,13 @@ export function DataLoggerPanel() {
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
-                    <span className="text-gray-500">Old Value:</span>{' '}
+                    <span className="text-gray-500">旧值:</span>{' '}
                     <span className="text-white font-semibold">
                       {event.oldValue.toString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">New Value:</span>{' '}
+                    <span className="text-gray-500">新值:</span>{' '}
                     <span className="text-neon-green font-semibold">
                       {event.newValue.toString()}
                     </span>

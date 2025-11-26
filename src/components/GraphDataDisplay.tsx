@@ -63,7 +63,7 @@ export function GraphDataDisplay() {
       setPools(data.pools)
     } catch (err) {
       console.error('Error fetching pools:', err)
-      setError('Failed to fetch data from The Graph')
+      setError('从 The Graph 获取数据失败')
     } finally {
       setLoading(false)
     }
@@ -91,7 +91,7 @@ export function GraphDataDisplay() {
         <div className="flex items-center gap-3 text-red-400">
           <Activity size={24} />
           <div>
-            <div className="font-semibold">Unable to fetch data</div>
+            <div className="font-semibold">无法获取数据</div>
             <div className="text-sm text-gray-500 mt-1">{error}</div>
           </div>
         </div>
@@ -104,8 +104,8 @@ export function GraphDataDisplay() {
       <div className="flex items-center gap-3 mb-6">
         <Database size={24} className="text-neon-blue" />
         <div>
-          <h2 className="text-xl font-bold text-white">The Graph Data</h2>
-          <p className="text-sm text-gray-400">Top Uniswap V3 Pools by Volume</p>
+          <h2 className="text-xl font-bold text-white">The Graph 数据</h2>
+          <p className="text-sm text-gray-400">Uniswap V3 交易量排行</p>
         </div>
       </div>
 
@@ -130,7 +130,7 @@ export function GraphDataDisplay() {
               <div>
                 <div className="flex items-center gap-2 text-sm text-gray-400 mb-1">
                   <DollarSign size={14} />
-                  <span>24h Volume</span>
+                  <span>24小时交易量</span>
                 </div>
                 <div className="text-lg font-semibold text-neon-green">
                   {formatNumber(pool.volumeUSD)}
@@ -163,7 +163,7 @@ export function GraphDataDisplay() {
         onClick={fetchPools}
         className="w-full mt-4 px-4 py-2 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 hover:border-neon-blue/50 text-gray-300 rounded-lg transition-all duration-300"
       >
-        Refresh Data
+        刷新数据
       </button>
     </div>
   )
