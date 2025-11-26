@@ -1,132 +1,112 @@
-# 🚀 Cyber Wallet - Blockchain DeFi Wallet
+# Blockchain Wallet DApp
 
-A modern, cyberpunk-styled blockchain wallet built with React, TypeScript, wagmi, and The Graph.
+一个功能完整的区块链钱包 DApp，支持智能合约交互、ERC-20 代币转账、交易历史查询和 The Graph 数据集成。
 
-## ✨ Features
+## 功能特性
 
-- 🔐 **Multi-Wallet Support**: Connect with MetaMask, WalletConnect, or any injected wallet
-- 🌐 **Multi-Chain**: Support for Ethereum, Polygon, Arbitrum, Optimism, Base, and Sepolia
-- 💸 **Send Transactions**: Easy-to-use interface for sending tokens
-- 📊 **The Graph Integration**: Real-time DeFi data from Uniswap V3 subgraphs
-- 🎨 **Cyberpunk UI**: Dark theme with neon accents and smooth animations
-- ⚡ **Fast & Secure**: Built on wagmi and viem for optimal performance
+### 1. 合约事件监听（DataLogger）
+- **实时事件监听**：监听 DataLogger 合约的 `DataUpdated` 事件
+- **合约交互**：调用 `updateData()` 函数更新链上数据
+- **事件历史**：显示最近的数据更新记录
+- **合约地址（Sepolia）**：`0x4Dd524d4F8fc441eC8844C4F8652AEBa6dD4d972`
 
-## 🛠️ Tech Stack
+### 2. ERC-20 代币转账（USDT）
+- **代币余额查询**：实时显示 USDT 余额
+- **代币转账**：支持发送 USDT 到任意地址
+- **交易状态跟踪**：实时显示交易状态（pending、confirmed、failed）
+- **多链支持**：支持 Ethereum、Sepolia、Polygon、Arbitrum、Optimism、Base
 
-- **Frontend**: React 19 + TypeScript
-- **Blockchain**: wagmi 3.x + viem 2.x
-- **Data**: The Graph (GraphQL)
-- **Styling**: Tailwind CSS
-- **Icons**: lucide-react
-- **Build Tool**: Vite
+### 3. 交易历史查询
+- **历史记录**：查询钱包地址的 ERC-20 代币转账历史
+- **实时更新**：监听新的转账事件并自动更新列表
+- **详细信息**：显示发送方、接收方、金额、时间戳
+- **区块浏览器链接**：点击查看详细交易信息
 
-## 📦 Installation
+### 4. The Graph 集成
+- **Uniswap 数据**：查询 Uniswap V3 热门交易对数据
+- **实时价格**：显示代币对的实时价格和流动性
+- **Subgraph 指南**：提供完整的 Subgraph 创建教程
 
-```bash
-# Install dependencies
+## 技术栈
+
+- **React 19** - 前端框架
+- **TypeScript** - 类型安全
+- **Viem** - 以太坊交互库
+- **Wagmi** - React Hooks for Ethereum
+- **TanStack Query** - 数据获取和缓存
+- **Tailwind CSS** - 样式框架
+- **GraphQL** - The Graph 查询
+- **Lucide React** - 图标库
+
+## 开始使用
+
+### 安装依赖
+
+\`\`\`bash
 npm install
+\`\`\`
 
-# Run development server
+### 启动开发服务器
+
+\`\`\`bash
 npm run dev
+\`\`\`
 
-# Build for production
+### 构建生产版本
+
+\`\`\`bash
 npm run build
+\`\`\`
 
-# Preview production build
-npm run preview
-```
+## 使用指南
 
-## 🔧 Configuration
+### 1. 连接钱包
 
-### WalletConnect Project ID
+点击页面右上角的 "Connect Wallet" 按钮，选择 MetaMask 或其他支持的钱包。
 
-To use WalletConnect, update the `projectId` in `src/config/wagmi.ts`:
+### 2. 切换网络
 
-```typescript
-const projectId = 'YOUR_PROJECT_ID' // Get from https://cloud.walletconnect.com
-```
+在 "Overview" 标签页的 "Networks" 卡片中点击想要切换的网络。
 
-### The Graph Subgraphs
+### 3. 使用 DataLogger 合约
 
-Configure subgraph endpoints in `src/config/graph.ts`:
+1. 切换到 "DataLogger" 标签页
+2. 确保已连接到 Sepolia 测试网
+3. 输入新的数值并点击 "Update"
+4. 在 MetaMask 中确认交易
 
-```typescript
-export const GRAPH_ENDPOINTS = {
-  uniswapV3: 'YOUR_SUBGRAPH_URL',
-  aave: 'YOUR_AAVE_SUBGRAPH_URL',
-  // Add more subgraphs as needed
-}
-```
+### 4. 转账 ERC-20 代币
 
-## 🎯 Key Components
+1. 切换到 "Token Transfer" 标签页
+2. 输入接收地址和转账金额
+3. 点击 "Send Tokens" 并确认交易
 
-### WalletConnect
-- Handles wallet connection/disconnection
-- Displays connected address
-- Shows connection status
+### 5. 查看交易历史
 
-### WalletPanel (Right Sidebar)
-- Display balance
-- Send transactions
-- Transaction history (coming soon)
-- Token swap interface (coming soon)
+切换到 "History" 标签页查看最近的交易记录。
 
-### NetworkSwitch
-- Switch between supported chains
-- Visual network status indicators
-- One-click chain switching
+### 6. 创建 The Graph Subgraph
 
-### GraphDataDisplay
-- Real-time data from The Graph
-- Displays top Uniswap V3 pools
-- Volume and TVL information
-- Auto-refresh capability
+切换到 "Subgraph" 标签页查看完整的创建指南。
 
-## 🎨 UI Theme
+## 项目结构
 
-The app features a cyberpunk aesthetic with:
-- Dark background with animated grid pattern
-- Neon color palette (blue, purple, pink, green)
-- Glowing effects and smooth transitions
-- Custom scrollbar styling
-- Responsive design
+\`\`\`
+src/
+├── components/          # React 组件
+│   ├── DataLoggerPanel.tsx
+│   ├── TokenTransfer.tsx
+│   ├── TransactionHistory.tsx
+│   └── SubgraphGuide.tsx
+├── contracts/          # 合约 ABI
+├── config/             # 配置文件
+└── utils/              # 工具函数
+\`\`\`
 
-## 🔐 Supported Networks
+## 相关链接
 
-- Ethereum Mainnet
-- Sepolia Testnet
-- Polygon
-- Arbitrum
-- Optimism
-- Base
+- [Wagmi Documentation](https://wagmi.sh/)
+- [Viem Documentation](https://viem.sh/)
+- [The Graph Documentation](https://thegraph.com/docs/)
+- [Sepolia Etherscan](https://sepolia.etherscan.io/)
 
-## 📝 Usage
-
-1. **Connect Wallet**: Click on a wallet provider in the header
-2. **Switch Networks**: Use the network switcher to change chains
-3. **View Balance**: Check your balance in the right sidebar
-4. **Send Tokens**: Fill in recipient and amount, then send
-5. **View DeFi Data**: Explore real-time data from The Graph
-
-## 🚧 Future Enhancements
-
-- [ ] Token swap functionality
-- [ ] Transaction history with filtering
-- [ ] Multi-token support
-- [ ] NFT gallery
-- [ ] Portfolio analytics
-- [ ] Gas optimization suggestions
-- [ ] Contract interaction interface
-- [ ] More The Graph integrations
-
-## 📄 License
-
-MIT
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-Built with ❤️ using wagmi, viem, and The Graph

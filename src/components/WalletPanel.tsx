@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAccount, useBalance, useChainId, useSendTransaction, useWriteContract } from 'wagmi'
+import { useAccount, useBalance, useChainId, useSendTransaction } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
 import {
   Send,
