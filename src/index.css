@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+  }
+
+  * {
+    @apply border-gray-800;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-gray-950 via-gray-900 to-black text-gray-100;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Cyber grid background effect */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(rgba(0, 217, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Animated gradient overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 217, 255, 0.05) 0%,
+      rgba(189, 0, 255, 0.03) 25%,
+      transparent 50%
+    );
+    animation: pulse-slow 10s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@layer components {
+  /* Cyber button styles */
+  .btn-cyber {
+    @apply relative px-6 py-3 font-semibold text-white bg-transparent border-2 border-neon-blue
+           hover:bg-neon-blue/10 transition-all duration-300 overflow-hidden group;
+  }
+
+  .btn-cyber::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+           translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700;
+  }
+
+  /* Glowing card */
+  .card-glow {
+    @apply relative bg-gray-900/50 backdrop-blur-sm border border-gray-800
+           hover:border-neon-blue/50 transition-all duration-300;
+  }
+
+  .card-glow::before {
+    content: '';
+    @apply absolute -inset-[1px] bg-gradient-to-r from-neon-blue/20 via-neon-purple/20 to-neon-pink/20
+           opacity-0 hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm;
+  }
+
+  /* Input cyber style */
+  .input-cyber {
+    @apply bg-gray-900/50 border border-gray-700 text-gray-100 px-4 py-2
+           focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20
+           transition-all duration-300 outline-none;
+  }
+
+  /* Neon text */
+  .text-neon {
+    @apply text-neon-blue;
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.5),
+                 0 0 20px rgba(0, 217, 255, 0.3),
+                 0 0 30px rgba(0, 217, 255, 0.2);
+  }
+}
+
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-950;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 hover:bg-gray-600;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neon-blue/50;
+}
