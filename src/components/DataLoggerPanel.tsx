@@ -79,7 +79,7 @@ export function DataLoggerPanel() {
     setIsLoadingHistory(true)
     try {
       const currentBlock = await publicClient.getBlockNumber()
-      const fromBlock = currentBlock - 10000n // Last ~10k blocks
+      const fromBlock = currentBlock - 5000n // Last ~5k blocks (safe for RPC limits)
 
       const logs = await publicClient.getLogs({
         address: contractAddress as `0x${string}`,
@@ -303,10 +303,23 @@ export function DataLoggerPanel() {
 
       {/* Event History Timeline */}
       <div className="card-glow rounded-lg p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Activity size={18} className="text-neon-purple" />
-          <h3 className="text-lg font-bold text-white">数据更新历史</h3>
-          <span className="text-xs text-gray-500">({events.length} 条记录)</span>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Activity size={18} className="text-neon-purple" />
+            <h3 className="text-lg font-bold text-white">数据更新历史</h3>
+            <span className="text-xs text-gray-500">({events.length} 条记录)</span>
+          </div>
+          <button
+            onClick={loadHistoricalEvents}
+            disabled={isLoadingHistory}
+            className="p-2 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+            title="刷新历史记录"
+          >
+            <RefreshCw
+              size={18}
+              className={`text-gray-400 hover:text-neon-purple ${isLoadingHistory ? 'animate-spin' : ''}`}
+            />
+          </button>
         </div>
 
         {isLoadingHistory && events.length === 0 ? (
