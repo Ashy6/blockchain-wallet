@@ -1,8 +1,8 @@
 // Contract addresses for different networks
 export const CONTRACT_ADDRESSES = {
-  // DataLogger contract on Sepolia
+  // DataLogger contract on Sepolia (支持字符串、中文、emoji)
   dataLogger: {
-    11155111: '0x4Dd524d4F8fc441eC8844C4F8652AEBa6dD4d972', // Sepolia
+    11155111: '0x77F865A7f17c88Bb647cB45dCd0ed661ad53ECC3', // Sepolia - 新部署
   },
 
   // USDT contract addresses

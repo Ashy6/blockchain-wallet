@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
 import { gql } from 'graphql-request'
-import { uniswapClient } from '../config/graph'
+import { createFallbackClient, UNISWAP_V3_ENDPOINTS } from '../config/graph'
 import { Database, TrendingUp, DollarSign, Activity, Loader2 } from 'lucide-react'
 
 interface Token {
@@ -50,22 +51,63 @@ export function GraphDataDisplay() {
   const [pools, setPools] = useState<Pool[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastFetch, setLastFetch] = useState<number>(0)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // Cache duration: 5 minutes
+  const CACHE_DURATION = 5 * 60 * 1000
 
   useEffect(() => {
     fetchPools()
   }, [])
 
-  const fetchPools = async () => {
+  const fetchPools = async (force = false) => {
+    // Check cache - only fetch if cache expired or force refresh
+    const now = Date.now()
+    const cacheExpired = now - lastFetch > CACHE_DURATION
+
+    if (!force && !cacheExpired && pools.length > 0) {
+      console.log('使用缓存数据，距离下次刷新还有', Math.round((CACHE_DURATION - (now - lastFetch)) / 1000), '秒')
+      return
+    }
+
     try {
-      setLoading(true)
+      if (force) {
+        setIsRefreshing(true)
+      } else {
+        setLoading(true)
+      }
       setError(null)
-      const data = await uniswapClient.request<{ pools: Pool[] }>(POOLS_QUERY)
+
+      // Use fallback mechanism to try multiple endpoints
+      const data = await createFallbackClient<{ pools: Pool[] }>(
+        UNISWAP_V3_ENDPOINTS,
+        POOLS_QUERY
+      )
+
       setPools(data.pools)
+      setLastFetch(now)
     } catch (err) {
-      console.error('Error fetching pools:', err)
-      setError('从 The Graph 获取数据失败')
+      const error = err as Error
+      console.error('Error fetching pools:', error)
+
+      // Provide specific error messages based on error type
+      if (error.message.includes('所有端点都失败了')) {
+        setError('无法连接到 The Graph，所有备用端点都失败了。请稍后重试。')
+      } else if (error.message.includes('429')) {
+        setError('请求过于频繁，请等待 5 分钟后再试（速率限制）')
+      } else if (error.message.includes('404')) {
+        setError('Subgraph 端点未找到，可能已迁移')
+      } else if (error.message.includes('fetch') || error.message.includes('network')) {
+        setError('网络连接失败，请检查网络设置')
+      } else if (error.message.includes('timeout')) {
+        setError('请求超时，请稍后重试')
+      } else {
+        setError(`从 The Graph 获取数据失败: ${error.message || '未知错误'}`)
+      }
     } finally {
       setLoading(false)
+      setIsRefreshing(false)
     }
   }
 
@@ -77,12 +119,38 @@ export function GraphDataDisplay() {
     return `$${value.toFixed(decimals)}`
   }
 
+  const getCacheStatus = () => {
+    if (lastFetch === 0) return ''
+    const now = Date.now()
+    const timeSinceLastFetch = now - lastFetch
+    const timeUntilNextRefresh = CACHE_DURATION - timeSinceLastFetch
+
+    if (timeUntilNextRefresh > 0) {
+      const minutes = Math.floor(timeUntilNextRefresh / 60000)
+      const seconds = Math.floor((timeUntilNextRefresh % 60000) / 1000)
+      return `缓存有效 (${minutes}:${seconds.toString().padStart(2, '0')})`
+    }
+    return '缓存已过期'
+  }
+
+  const handleRefresh = () => {
+    fetchPools(true)
+  }
+
   const refetchPools = (
     <button
-      onClick={fetchPools}
-      className="w-full mt-4 px-4 py-2 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 hover:border-neon-blue/50 text-gray-300 rounded-lg transition-all duration-300"
+      onClick={handleRefresh}
+      disabled={isRefreshing}
+      className="w-full mt-4 px-4 py-2 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 hover:border-neon-blue/50 text-gray-300 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      刷新数据
+      {isRefreshing ? (
+        <span className="flex items-center justify-center gap-2">
+          <Loader2 size={16} className="animate-spin" />
+          刷新中...
+        </span>
+      ) : (
+        <span>{getCacheStatus() || '刷新数据'}</span>
+      )}
     </button>
   )
 
@@ -94,15 +162,23 @@ export function GraphDataDisplay() {
     )
   }
 
-  if (error) {
+  if (error && pools.length === 0) {
     return (
       <div className="card-glow rounded-lg p-6">
-        <div className="flex items-center gap-3 text-red-400">
+        <div className="flex items-center gap-3 text-red-400 mb-4">
           <Activity size={24} />
           <div>
             <div className="font-semibold">无法获取数据</div>
             <div className="text-sm text-gray-500 mt-1">{error}</div>
           </div>
+        </div>
+        <div className="text-xs text-gray-400 bg-gray-900/50 border border-gray-800 rounded p-3 mb-4">
+          💡 提示：The Graph 公共端点有速率限制。建议：
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li>等待 5 分钟后重试</li>
+            <li>避免频繁刷新数据</li>
+            <li>数据会自动缓存 5 分钟</li>
+          </ul>
         </div>
         {refetchPools}
       </div>
@@ -118,6 +194,16 @@ export function GraphDataDisplay() {
           <p className="text-sm text-gray-400">Uniswap V3 交易量排行</p>
         </div>
       </div>
+
+      {/* Show error warning if there's an error but we have cached data */}
+      {error && pools.length > 0 && (
+        <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+          <div className="flex items-center gap-2 text-yellow-400 text-sm">
+            <Activity size={16} />
+            <span>刷新失败，显示缓存数据：{error}</span>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4">
         {pools.map((pool) => (

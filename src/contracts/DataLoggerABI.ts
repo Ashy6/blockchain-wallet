@@ -1,4 +1,16 @@
+// 完整的 DataLogger 合约 ABI（支持字符串、中文、emoji）
 export const DataLoggerABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "initialValue",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "anonymous": false,
     "inputs": [
@@ -10,14 +22,20 @@ export const DataLoggerABI = [
       },
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "oldValue",
-        "type": "uint256"
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newValue",
+        "type": "string"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "newValue",
+        "name": "timestamp",
         "type": "uint256"
       }
     ],
@@ -26,12 +44,25 @@ export const DataLoggerABI = [
   },
   {
     "inputs": [],
-    "name": "data",
+    "name": "dataText",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "",
-        "type": "uint256"
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "readData",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -40,9 +71,9 @@ export const DataLoggerABI = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "newValue",
-        "type": "uint256"
+        "type": "string"
       }
     ],
     "name": "updateData",
