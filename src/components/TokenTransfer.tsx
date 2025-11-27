@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from 'react'
 import { useAccount, useChainId, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { ERC20_ABI } from '../contracts/ERC20ABI'
@@ -81,6 +80,7 @@ export function TokenTransfer() {
         abi: ERC20_ABI,
         functionName: 'transfer',
         args: [recipient as `0x${string}`, amountInWei],
+        gas: 100000n, // Explicit gas limit for ERC-20 transfers (prevents estimation issues on testnets)
       })
     } catch (error) {
       console.error('Transfer error:', error)

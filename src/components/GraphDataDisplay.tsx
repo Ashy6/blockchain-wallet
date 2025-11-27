@@ -77,6 +77,15 @@ export function GraphDataDisplay() {
     return `$${value.toFixed(decimals)}`
   }
 
+  const refetchPools = (
+    <button
+      onClick={fetchPools}
+      className="w-full mt-4 px-4 py-2 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 hover:border-neon-blue/50 text-gray-300 rounded-lg transition-all duration-300"
+    >
+      刷新数据
+    </button>
+  )
+
   if (loading) {
     return (
       <div className="card-glow rounded-lg p-6 flex items-center justify-center">
@@ -95,6 +104,7 @@ export function GraphDataDisplay() {
             <div className="text-sm text-gray-500 mt-1">{error}</div>
           </div>
         </div>
+        {refetchPools}
       </div>
     )
   }
@@ -159,12 +169,7 @@ export function GraphDataDisplay() {
         ))}
       </div>
 
-      <button
-        onClick={fetchPools}
-        className="w-full mt-4 px-4 py-2 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 hover:border-neon-blue/50 text-gray-300 rounded-lg transition-all duration-300"
-      >
-        刷新数据
-      </button>
+      {refetchPools}
     </div>
   )
 }

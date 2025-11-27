@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAccount, useBalance, useChainId, useSendTransaction } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
+import { useEthPrice } from '../hooks/useEthPrice'
 import {
   Send,
   ArrowDownUp,
@@ -18,10 +19,16 @@ export function WalletPanel() {
   const chainId = useChainId()
   const { data: balance } = useBalance({ address })
   const { sendTransaction, isPending, isSuccess, isError, data: txHash } = useSendTransaction()
+  const { price: ethPrice, loading: priceLoading } = useEthPrice()
 
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
   const [activeTab, setActiveTab] = useState<'send' | 'swap' | 'history'>('send')
+
+  // Calculate USD value
+  const usdValue = balance && ethPrice
+    ? (parseFloat(formatEther(balance.value)) * ethPrice).toFixed(2)
+    : '0.00'
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,7 +80,9 @@ export function WalletPanel() {
         </div>
         <div className="mt-2 flex items-center gap-2">
           <TrendingUp size={14} className="text-neon-green" />
-          <span className="text-sm text-gray-400">≈ $0.00 USD</span>
+          <span className="text-sm text-gray-400">
+            ≈ ${priceLoading ? '...' : usdValue} USD
+          </span>
         </div>
       </div>
 
