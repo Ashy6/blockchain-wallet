@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { useAccount, useBalance, useChainId, useSendTransaction } from 'wagmi'
+import { useState, useEffect, useRef } from 'react'
+import { useAccount, useBalance, useChainId, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
 import { useEthPrice } from '../hooks/useEthPrice'
+import { useTransactionHistory } from '../hooks/useTransactionHistory'
 import {
   Send,
   ArrowDownUp,
@@ -11,7 +12,11 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
-  ExternalLink
+  ExternalLink,
+  Clock,
+  ArrowUpRight,
+  Trash2,
+  RefreshCw
 } from 'lucide-react'
 
 export function WalletPanel() {
@@ -20,15 +25,54 @@ export function WalletPanel() {
   const { data: balance } = useBalance({ address })
   const { sendTransaction, isPending, isSuccess, isError, data: txHash } = useSendTransaction()
   const { price: ethPrice, loading: priceLoading } = useEthPrice()
+  const { transactions, addTransaction, updateTransactionStatus, clearTransactions, cleanupDuplicates } = useTransactionHistory()
 
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
   const [activeTab, setActiveTab] = useState<'send' | 'swap' | 'history'>('send')
 
+  // Track which transactions have been added to prevent duplicates
+  const addedTxRef = useRef<Set<string>>(new Set())
+
+  // Wait for transaction confirmation
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash: txHash,
+  })
+
   // Calculate USD value
   const usdValue = balance && ethPrice
     ? (parseFloat(formatEther(balance.value)) * ethPrice).toFixed(2)
     : '0.00'
+
+  // Save transaction when it's sent
+  useEffect(() => {
+    if (txHash && address && recipient && amount && !addedTxRef.current.has(txHash)) {
+      addedTxRef.current.add(txHash)
+      addTransaction({
+        hash: txHash,
+        type: 'eth_transfer',
+        status: 'pending',
+        from: address,
+        to: recipient,
+        value: `${amount} ETH`,
+        description: `发送 ${amount} ETH 至 ${recipient.slice(0, 6)}...${recipient.slice(-4)}`,
+      })
+    }
+  }, [txHash, address, recipient, amount, addTransaction])
+
+  // Update transaction status when confirmed
+  useEffect(() => {
+    if (txHash && isConfirmed) {
+      updateTransactionStatus(txHash, 'confirmed')
+    }
+  }, [isConfirmed, txHash, updateTransactionStatus])
+
+  // Update transaction status when failed
+  useEffect(() => {
+    if (txHash && isError) {
+      updateTransactionStatus(txHash, 'failed')
+    }
+  }, [isError, txHash, updateTransactionStatus])
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -171,10 +215,14 @@ export function WalletPanel() {
             {/* Transaction Status */}
             {isSuccess && txHash && (
               <div className="flex items-start gap-3 p-4 bg-neon-green/10 border border-neon-green/30 rounded-lg">
-                <CheckCircle size={20} className="text-neon-green flex-shrink-0 mt-0.5" />
+                {isConfirming ? (
+                  <Loader2 size={20} className="text-yellow-400 flex-shrink-0 mt-0.5 animate-spin" />
+                ) : (
+                  <CheckCircle size={20} className="text-neon-green flex-shrink-0 mt-0.5" />
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-neon-green mb-1">
-                    Transaction Sent!
+                    {isConfirming ? 'Transaction Confirming...' : isConfirmed ? 'Transaction Confirmed!' : 'Transaction Sent!'}
                   </div>
                   <a
                     href={getExplorerUrl(txHash)}
@@ -216,12 +264,124 @@ export function WalletPanel() {
         )}
 
         {activeTab === 'history' && (
-          <div className="text-center py-12">
-            <History size={48} className="mx-auto mb-4 text-gray-600" />
-            <p className="text-gray-500">暂无交易历史</p>
-            <p className="text-sm text-gray-600 mt-2">
-              您的交易将在此显示
-            </p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white">交易历史</h3>
+              {transactions.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const result = cleanupDuplicates()
+                      if (result) {
+                        alert(`清理完成！\n清理前: ${result.before} 条\n清理后: ${result.after} 条`)
+                      }
+                    }}
+                    className="text-xs text-gray-500 hover:text-blue-400 flex items-center gap-1 px-2 py-1 border border-gray-700 rounded hover:border-blue-500/50"
+                    title="清理重复数据"
+                  >
+                    <RefreshCw size={12} />
+                    清理重复
+                  </button>
+                  <button
+                    onClick={clearTransactions}
+                    className="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1"
+                    title="清除所有历史"
+                  >
+                    <Trash2 size={12} />
+                    清除全部
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {transactions.length === 0 ? (
+              <div className="text-center py-12">
+                <History size={48} className="mx-auto mb-4 text-gray-600" />
+                <p className="text-gray-500">暂无交易历史</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  您的交易将在此显示
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                {transactions.map((tx) => (
+                  <div
+                    key={tx.hash}
+                    className="p-4 bg-gray-900/50 border border-gray-800 hover:border-neon-blue/30 rounded-lg transition-all duration-300"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${
+                          tx.status === 'pending'
+                            ? 'bg-yellow-500/10 border border-yellow-500/30'
+                            : tx.status === 'confirmed'
+                            ? 'bg-green-500/10 border border-green-500/30'
+                            : 'bg-red-500/10 border border-red-500/30'
+                        }`}>
+                          {tx.status === 'pending' ? (
+                            <Clock size={18} className="text-yellow-400" />
+                          ) : tx.status === 'confirmed' ? (
+                            <CheckCircle size={18} className="text-green-400" />
+                          ) : (
+                            <XCircle size={18} className="text-red-400" />
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-white flex items-center gap-2">
+                            {tx.type === 'eth_transfer' ? '发送 ETH' : tx.type === 'token_transfer' ? '代币转账' : '合约交互'}
+                            <ArrowUpRight size={14} className="text-gray-500" />
+                          </div>
+                          {tx.description && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              {tx.description}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`text-sm font-semibold px-2 py-1 rounded ${
+                          tx.status === 'pending'
+                            ? 'bg-yellow-500/10 text-yellow-400'
+                            : tx.status === 'confirmed'
+                            ? 'bg-green-500/10 text-green-400'
+                            : 'bg-red-500/10 text-red-400'
+                        }`}>
+                          {tx.status === 'pending' ? '处理中' : tx.status === 'confirmed' ? '已确认' : '失败'}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {new Date(tx.timestamp).toLocaleString('zh-CN', {
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {tx.value && (
+                      <div className="mb-2">
+                        <div className="text-sm text-gray-400">
+                          数量: <span className="text-white font-semibold">{tx.value}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-3 border-t border-gray-800">
+                      <a
+                        href={tx.explorerUrl || getExplorerUrl(tx.hash)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-gray-500 hover:text-neon-blue flex items-center gap-1"
+                      >
+                        <span className="truncate">Tx: {tx.hash.slice(0, 10)}...{tx.hash.slice(-8)}</span>
+                        <ExternalLink size={10} className="flex-shrink-0" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

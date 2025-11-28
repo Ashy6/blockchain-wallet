@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAccount, useChainId, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi'
 import { ERC20_ABI } from '../contracts/ERC20ABI'
 import { getContractAddress } from '../config/contracts'
 import { formatTokenAmount, formatAddress } from '../utils/format'
+import { useTransactionHistory } from '../hooks/useTransactionHistory'
 import { Coins, Send, Loader2, CheckCircle, XCircle, ExternalLink, RefreshCw } from 'lucide-react'
 
 export function TokenTransfer() {
@@ -10,6 +11,10 @@ export function TokenTransfer() {
   const chainId = useChainId()
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
+  const { addTransaction, updateTransactionStatus } = useTransactionHistory()
+
+  // Track which transactions have been added to prevent duplicates
+  const addedTxRef = useRef<Set<string>>(new Set())
 
   const usdtAddress = getContractAddress('usdt', chainId)
 
@@ -59,13 +64,39 @@ export function TokenTransfer() {
     hash,
   })
 
+  // Save transaction when it's sent
   useEffect(() => {
-    if (isConfirmed) {
+    if (hash && address && recipient && amount && tokenSymbol && !addedTxRef.current.has(hash)) {
+      addedTxRef.current.add(hash)
+      addTransaction({
+        hash,
+        type: 'token_transfer',
+        status: 'pending',
+        from: address,
+        to: recipient,
+        value: `${amount} ${tokenSymbol.toString()}`,
+        tokenSymbol: tokenSymbol.toString(),
+        description: `转账 ${amount} ${tokenSymbol.toString()} 至 ${recipient.slice(0, 6)}...${recipient.slice(-4)}`,
+      })
+    }
+  }, [hash, address, recipient, amount, tokenSymbol, addTransaction])
+
+  // Update transaction status when confirmed
+  useEffect(() => {
+    if (hash && isConfirmed) {
+      updateTransactionStatus(hash, 'confirmed')
       setRecipient('')
       setAmount('')
       refetchBalance()
     }
-  }, [isConfirmed, refetchBalance])
+  }, [isConfirmed, hash, updateTransactionStatus, refetchBalance])
+
+  // Update transaction status when failed
+  useEffect(() => {
+    if (hash && isError) {
+      updateTransactionStatus(hash, 'failed')
+    }
+  }, [isError, hash, updateTransactionStatus])
 
   const handleTransfer = async (e: React.FormEvent) => {
     e.preventDefault()

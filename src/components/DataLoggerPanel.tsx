@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAccount, useChainId, useWriteContract, useWatchContractEvent, useReadContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi'
 import { DataLoggerABI } from '../contracts/DataLoggerABI'
 import { getContractAddress } from '../config/contracts'
+import { useTransactionHistory } from '../hooks/useTransactionHistory'
 import { FileText, Send, Activity, Clock, User, Loader2, CheckCircle, ExternalLink, RefreshCw, Sparkles } from 'lucide-react'
 import { formatAddress } from '../utils/format'
 
@@ -25,6 +26,10 @@ export function DataLoggerPanel() {
   const [events, setEvents] = useState<DataUpdatedEvent[]>([])
   const [currentData, setCurrentData] = useState<string>('')
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+  const { addTransaction, updateTransactionStatus } = useTransactionHistory()
+
+  // Track which transactions have been added to prevent duplicates
+  const addedTxRef = useRef<Set<string>>(new Set())
 
   const contractAddress = getContractAddress('dataLogger', chainId)
 
@@ -142,12 +147,29 @@ export function DataLoggerPanel() {
     }
   }, [dataValue])
 
+  // Save transaction when it's sent
   useEffect(() => {
-    if (isConfirmed) {
+    if (hash && address && newValue && !addedTxRef.current.has(hash)) {
+      addedTxRef.current.add(hash)
+      addTransaction({
+        hash,
+        type: 'contract_interaction',
+        status: 'pending',
+        from: address,
+        to: contractAddress,
+        description: `更新 DataLogger 数据为: "${newValue.slice(0, 30)}${newValue.length > 30 ? '...' : ''}"`,
+      })
+    }
+  }, [hash, address, newValue, contractAddress, addTransaction])
+
+  // Update transaction status when confirmed
+  useEffect(() => {
+    if (hash && isConfirmed) {
+      updateTransactionStatus(hash, 'confirmed')
       setNewValue('')
       refetchData()
     }
-  }, [isConfirmed, refetchData])
+  }, [isConfirmed, hash, updateTransactionStatus, refetchData])
 
   const handleUpdateData = async (e: React.FormEvent) => {
     e.preventDefault()
