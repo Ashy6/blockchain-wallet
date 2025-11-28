@@ -93,11 +93,11 @@ export function GraphDataDisplay() {
 
       // Provide specific error messages based on error type
       if (error.message.includes('所有端点都失败了')) {
-        setError('无法连接到 The Graph，所有备用端点都失败了。请稍后重试。')
+        setError('无法连接到 The Graph。建议配置 API Key 以使用官方去中心化网络（每月 100K 免费查询）。')
       } else if (error.message.includes('429')) {
-        setError('请求过于频繁，请等待 5 分钟后再试（速率限制）')
+        setError('请求过于频繁，请等待后再试（速率限制）。建议配置 API Key。')
       } else if (error.message.includes('404')) {
-        setError('Subgraph 端点未找到，可能已迁移')
+        setError('Subgraph 端点未找到。旧的 Hosted Service 已关闭，请配置 API Key 使用新网络。')
       } else if (error.message.includes('fetch') || error.message.includes('network')) {
         setError('网络连接失败，请检查网络设置')
       } else if (error.message.includes('timeout')) {
@@ -173,11 +173,13 @@ export function GraphDataDisplay() {
           </div>
         </div>
         <div className="text-xs text-gray-400 bg-gray-900/50 border border-gray-800 rounded p-3 mb-4">
-          💡 提示：The Graph 公共端点有速率限制。建议：
+          💡 解决方案：获取免费 The Graph API Key
           <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>等待 5 分钟后重试</li>
-            <li>避免频繁刷新数据</li>
-            <li>数据会自动缓存 5 分钟</li>
+            <li>访问 <a href="https://thegraph.com/studio/apikeys/" target="_blank" rel="noopener noreferrer" className="text-neon-blue hover:underline">The Graph Studio</a></li>
+            <li>创建 API Key（每月 100K 免费查询）</li>
+            <li>在项目根目录创建 .env 文件</li>
+            <li>添加：VITE_GRAPH_API_KEY=你的key</li>
+            <li>重启开发服务器</li>
           </ul>
         </div>
         {refetchPools}

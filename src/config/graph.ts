@@ -1,15 +1,26 @@
 import { GraphQLClient } from 'graphql-request'
 
-// Uniswap V3 endpoints - Multiple fallback options (ordered by priority)
-// 使用支持 CORS 的公共端点
-export const UNISWAP_V3_ENDPOINTS = [
-  // Messari Uniswap V3 Subgraph - 公开支持 CORS
-  'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-ethereum',
-  // Community maintained endpoint - 支持 CORS
-  'https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-subgraph',
-  // Legacy hosted service
-  'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
-]
+// The Graph API Key - 从环境变量获取
+// 获取免费 API key (100K 查询/月): https://thegraph.com/studio/apikeys/
+const GRAPH_API_KEY = import.meta.env.VITE_GRAPH_API_KEY || ''
+
+// Uniswap V3 Official Subgraph ID (Ethereum Mainnet)
+const UNISWAP_V3_SUBGRAPH_ID = '5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV'
+
+// Uniswap V3 endpoints - 使用 The Graph 去中心化网络
+// 注意：旧的 Hosted Service 已于 2023 年关闭
+export const UNISWAP_V3_ENDPOINTS = GRAPH_API_KEY
+  ? [
+      // 主网关（需要 API key）
+      `https://gateway.thegraph.com/api/${GRAPH_API_KEY}/subgraphs/id/${UNISWAP_V3_SUBGRAPH_ID}`,
+      // Arbitrum 网关（需要 API key）
+      `https://gateway-arbitrum.network.thegraph.com/api/${GRAPH_API_KEY}/subgraphs/id/${UNISWAP_V3_SUBGRAPH_ID}`,
+    ]
+  : [
+      // 无 API key 时使用公共查询端点（有速率限制）
+      // 注意：这些端点可能不稳定或速率限制更严格
+      `https://api.studio.thegraph.com/query/48211/uniswap-v3-mainnet/version/latest`,
+    ]
 
 export const GRAPH_ENDPOINTS = {
   aave: 'https://api.thegraph.com/subgraphs/name/aave/protocol-v3',
@@ -22,7 +33,6 @@ export const createGraphClient = (endpoint: string) => {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    timeout: 15000, // 15 second timeout
     fetch: (url, options) => {
       // 自定义 fetch 以确保正确的 CORS 配置
       return fetch(url, {

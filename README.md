@@ -46,6 +46,27 @@
 npm install
 \`\`\`
 
+### 配置环境变量（可选但推荐）
+
+为了使用 The Graph 数据查询功能，建议配置 API Key：
+
+1. 复制环境变量模板：
+\`\`\`bash
+cp .env.example .env
+\`\`\`
+
+2. 获取免费 The Graph API Key：
+   - 访问 [The Graph Studio](https://thegraph.com/studio/apikeys/)
+   - 创建账户并生成 API Key
+   - 每月可免费查询 100,000 次
+
+3. 在 \`.env\` 文件中填入你的 API Key：
+\`\`\`
+VITE_GRAPH_API_KEY=your_api_key_here
+\`\`\`
+
+> **注意**：旧的 The Graph Hosted Service 已于 2023 年关闭。现在必须使用去中心化网络，需要 API Key 才能稳定访问。
+
 ### 启动开发服务器
 
 \`\`\`bash

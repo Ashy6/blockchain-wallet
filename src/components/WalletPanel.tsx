@@ -89,9 +89,9 @@ export function WalletPanel() {
       {/* Tabs */}
       <div className="flex border-b border-gray-800">
         {[
-          { id: 'send', label: 'Send', icon: Send },
-          { id: 'swap', label: 'Swap', icon: ArrowDownUp },
-          { id: 'history', label: 'History', icon: History },
+          { id: 'send', label: '发送交易', icon: Send },
+          // { id: 'swap', label: 'Swap', icon: ArrowDownUp },
+          { id: 'history', label: '历史记录', icon: History },
         ].map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -114,7 +114,7 @@ export function WalletPanel() {
           <form onSubmit={handleSend} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Recipient Address
+                收款地址：
               </label>
               <input
                 type="text"
@@ -128,7 +128,7 @@ export function WalletPanel() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Amount ({balance?.symbol || 'ETH'})
+                数量 ({balance?.symbol || 'ETH'})：
               </label>
               <input
                 type="number"
