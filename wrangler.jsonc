@@ -1,7 +1,0 @@
-{
-  "name": "blockchain-wallet",
-  "main": "src/main.tsx",
-  "assets": {
-    "directory": "./dist"
-  }
-}
