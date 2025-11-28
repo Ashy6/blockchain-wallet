@@ -1,0 +1,7 @@
+{
+  "name": "blockchain-wallet",
+  "main": "src/index.ts",
+  "assets": {
+    "directory": "./dist"
+  }
+}
