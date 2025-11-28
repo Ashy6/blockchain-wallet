@@ -13,18 +13,22 @@
 ## 🎯 核心功能
 
 ### 1. 链上数据存储
+
 - ✅ 支持任意字符串（中文、英文、emoji、特殊字符）
 - ✅ 数据永久存储在区块链上
 - ✅ 任何人都可以读取，只有交易发送者可以修改
 
 ### 2. 事件日志记录
+
 每次数据更新都会触发 `DataUpdated` 事件，记录：
+
 - 👤 更新者地址 (user)
 - 📝 旧值 (oldValue)
 - ✨ 新值 (newValue)
 - ⏰ 时间戳 (timestamp)
 
 ### 3. 历史记录追踪
+
 - ✅ 自动从区块链加载历史事件（最近 10,000 个区块）
 - ✅ 实时监听新事件
 - ✅ 本地缓存（localStorage），刷新页面数据不丢失
@@ -33,7 +37,9 @@
 ## 🧪 测试用例
 
 ### 测试用例 1: 基本文本存储
+
 **步骤**:
+
 1. 连接 MetaMask 钱包到 Sepolia 测试网
 2. 切换到"合约交互"标签页
 3. 在文本框输入: `Hello World`
@@ -41,6 +47,7 @@
 5. 在 MetaMask 确认交易
 
 **预期结果**:
+
 - ✅ 显示"交易已发送，等待确认..."
 - ✅ 交易确认后显示"✅ 交易已确认！数据已写入区块链"
 - ✅ "当前链上数据"更新为 `Hello World`
@@ -49,11 +56,14 @@
 ---
 
 ### 测试用例 2: 中文字符支持
+
 **步骤**:
+
 1. 在文本框输入: `你好，世界！`
 2. 提交到链上
 
 **预期结果**:
+
 - ✅ 中文字符正确存储
 - ✅ 读取时中文显示正常
 - ✅ 历史记录中旧值显示之前的英文，新值显示中文
@@ -61,27 +71,35 @@
 ---
 
 ### 测试用例 3: Emoji 支持
+
 **步骤**:
+
 1. 在文本框输入: `区块链很酷 🚀🌕💎`
 2. 提交到链上
 
 **预期结果**:
+
 - ✅ Emoji 正确存储和显示
 - ✅ 字符计数正确
 
 ---
 
 ### 测试用例 4: 长文本存储
+
 **步骤**:
+
 1. 输入一段长文本（200+ 字符）:
+
 ```
 这是一段非常长的文本，用于测试 DataLogger 合约是否能够正确处理长字符串。
 区块链技术是一种分布式账本技术，具有去中心化、不可篡改、透明可追溯等特点。
 This is a very long text to test if DataLogger can handle long strings correctly.
 ```
+
 2. 提交到链上
 
 **预期结果**:
+
 - ✅ 长文本正确存储
 - ✅ UI 能够正确换行显示
 - ✅ 历史记录中内容完整显示
@@ -89,23 +107,29 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ---
 
 ### 测试用例 5: 多语言混合
+
 **步骤**:
+
 1. 输入: `Hello 你好 こんにちは مرحبا 🌍`
 2. 提交到链上
 
 **预期结果**:
+
 - ✅ 所有语言字符正确存储
 - ✅ 显示时不乱码
 
 ---
 
 ### 测试用例 6: 历史记录加载
+
 **步骤**:
+
 1. 进行多次数据更新（至少 5 次）
 2. 刷新页面
 3. 点击"刷新历史"按钮
 
 **预期结果**:
+
 - ✅ 页面加载时自动从 localStorage 恢复历史
 - ✅ 点击刷新后从区块链获取最新数据
 - ✅ 历史记录按时间倒序排列（最新的在上面）
@@ -114,13 +138,16 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ---
 
 ### 测试用例 7: 实时事件监听
+
 **步骤**:
+
 1. 在浏览器 A 连接钱包并打开应用
 2. 在浏览器 B（或另一个标签页）连接另一个钱包
 3. 在浏览器 B 更新数据
 4. 观察浏览器 A 的历史记录
 
 **预期结果**:
+
 - ✅ 浏览器 A 自动接收到新事件
 - ✅ 历史记录实时更新
 - ✅ "当前链上数据"自动更新
@@ -128,22 +155,28 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ---
 
 ### 测试用例 8: 用户标识
+
 **步骤**:
+
 1. 使用自己的钱包更新数据
 2. 查看历史记录
 
 **预期结果**:
+
 - ✅ 自己发起的交易记录旁边显示"你"标签
 - ✅ 其他用户的交易显示完整地址
 
 ---
 
 ### 测试用例 9: 区块浏览器链接
+
 **步骤**:
+
 1. 更新数据后
 2. 点击交易哈希链接
 
 **预期结果**:
+
 - ✅ 在新标签页打开 Sepolia Etherscan
 - ✅ 显示交易详情
 - ✅ 可以查看事件日志
@@ -151,11 +184,14 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ---
 
 ### 测试用例 10: 空数据处理
+
 **步骤**:
+
 1. 查看刚部署的合约（可能有初始值）
 2. 查看历史记录中的部署事件
 
 **预期结果**:
+
 - ✅ 初始值正确显示（如果有）
 - ✅ 部署事件的 oldValue 为空，显示"空"
 - ✅ newValue 显示初始值
@@ -165,33 +201,42 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ## 🔍 边界情况测试
 
 ### 测试用例 11: 网络切换
+
 **步骤**:
+
 1. 在 Sepolia 网络使用合约
 2. 切换到其他网络（如 Ethereum Mainnet）
 
 **预期结果**:
+
 - ✅ 显示"DataLogger 合约在此网络上不可用"
 - ✅ 提示切换到 Sepolia 测试网
 
 ---
 
 ### 测试用例 12: 未连接钱包
+
 **步骤**:
+
 1. 断开钱包连接
 2. 访问合约交互页面
 
 **预期结果**:
+
 - ✅ 显示"连接钱包以与 DataLogger 合约交互"
 - ✅ 无法进行任何操作
 
 ---
 
 ### 测试用例 13: 交易失败处理
+
 **步骤**:
+
 1. 输入数据但在 MetaMask 拒绝交易
 2. 或者设置过低的 gas 导致交易失败
 
 **预期结果**:
+
 - ✅ 不显示成功消息
 - ✅ 数据不更新
 - ✅ 可以重新尝试
@@ -227,6 +272,7 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ## 🎨 UI/UX 功能
 
 ### 视觉效果
+
 - ✅ Neon 霓虹灯效果
 - ✅ 渐变色背景
 - ✅ Hover 动画
@@ -235,6 +281,7 @@ This is a very long text to test if DataLogger can handle long strings correctly
 - ✅ 平滑过渡效果
 
 ### 交互反馈
+
 - ✅ 按钮禁用状态
 - ✅ 输入框焦点效果
 - ✅ 交易进度提示
@@ -246,11 +293,14 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ## 🚀 性能测试
 
 ### 测试用例 14: 大量历史记录
+
 **步骤**:
+
 1. 进行 20+ 次数据更新
 2. 刷新页面观察加载速度
 
 **预期结果**:
+
 - ✅ 即使有大量记录，页面加载仍然流畅
 - ✅ 历史记录限制在 50 条
 - ✅ 滚动列表性能良好
@@ -276,6 +326,7 @@ This is a very long text to test if DataLogger can handle long strings correctly
 ## ✅ 测试结论
 
 所有核心功能已完整实现并可正常工作：
+
 - ✅ 链上数据读写
 - ✅ 事件监听和记录
 - ✅ 历史追踪

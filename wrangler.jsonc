@@ -1,6 +1,6 @@
 {
   "name": "blockchain-wallet",
-  "main": "src/index.ts",
+  "main": "src/main.tsx",
   "assets": {
     "directory": "./dist"
   }
